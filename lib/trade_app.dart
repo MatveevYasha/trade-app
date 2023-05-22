@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trade_app/screens/home_screen.dart';
 import 'package:trade_app/screens/loading_screen.dart';
 
 class TradeApp extends StatelessWidget {

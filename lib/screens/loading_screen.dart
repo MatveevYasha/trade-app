@@ -25,15 +25,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
         context,
         MaterialPageRoute(builder: (context) => const ActivateScreen()),
       );
-      // Navigator.pushReplacement(
-      //   context,
-      //   PageRouteBuilder(
-      //     pageBuilder: (_, __, ___) => const ActivateScreen(),
-      //     transitionDuration: const Duration(seconds: 1),
-      //     transitionsBuilder: (_, a, __, c) =>
-      //         FadeTransition(opacity: a, child: c),
-      //   ),
-      // );
     }
   }
 
