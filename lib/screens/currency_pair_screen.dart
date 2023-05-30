@@ -89,7 +89,7 @@ class _CurrencyPairScreenState extends State<CurrencyPairScreen> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           PageRouteBuilder(
                               pageBuilder: (_, __, ___) => HomeScreen(

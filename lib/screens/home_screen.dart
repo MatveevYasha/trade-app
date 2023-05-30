@@ -4,12 +4,12 @@ import 'package:flag/flag_enum.dart';
 import 'package:flag/flag_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:trade_app/domain/cost_notifier.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 import 'package:trade_app/screens/currency_pair_screen.dart';
 
-final _formKey = GlobalKey<FormState>();
+GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
@@ -28,7 +28,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final WebViewController controller;
   int currenIndex = 0;
-  int userBalance = 10000;
   String str = '';
   int investment = 100;
 
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) => Theme(
         data: ThemeData.dark(),
         child: Container(
-          height: 216,
+          height: MediaQuery.of(context).size.height * 0.25,
           padding: const EdgeInsets.only(top: 6.0),
           margin: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -74,9 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
+          onProgress: (int progress) {},
         ),
       )
       ..loadRequest(Uri.parse(url));
@@ -95,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _convertBalance() {
-    String bal = '$userBalance';
+    String bal = '${context.watch<CostNotifier>().userBalance}';
     List<String> listBal = bal.split('');
     if (listBal.length > 3) {
       switch (listBal.length) {
@@ -115,10 +112,10 @@ class _HomeScreenState extends State<HomeScreen> {
           str = bal;
           break;
         default:
-          str = '$userBalance';
+          str = '${context.watch<CostNotifier>().userBalance}';
       }
     } else {
-      str = '$userBalance';
+      str = '${context.watch<CostNotifier>().userBalance}';
     }
   }
 
@@ -233,10 +230,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CurrencyPairScreen()),
+                          builder: (context) => const CurrencyPairScreen(),
+                        ),
                       );
                     },
                     child: Container(
@@ -413,8 +411,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           });
                                           return 'Enter number';
                                         }
-                                        if ((int.tryParse(value)! >
-                                                userBalance) ==
+                                        if ((int.parse(value) >
+                                                Provider.of<CostNotifier>(
+                                                        context,
+                                                        listen: false)
+                                                    .userBalance) ==
                                             true) {
                                           setState(() {
                                             hideText = true;
@@ -455,7 +456,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       int inv = int.parse(
                                           balanceFieldController.text);
                                       setState(() {
-                                        if (inv <= userBalance) {
+                                        if (inv <=
+                                            context
+                                                .watch<CostNotifier>()
+                                                .userBalance) {
                                           inv = inv + 100;
                                           balanceFieldController.text = '$inv';
                                         }
@@ -491,18 +495,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : const Text('Successfully'),
                               ),
                             );
-                            setState(() {
-                              int ub = int.parse(balanceFieldController.text);
-                              if (ub <= userBalance) {
-                                if (chance == 1) {
-                                  userBalance =
-                                      userBalance + ub + (ub * 0.7).toInt();
-                                }
-                                if (chance == 0) {
-                                  userBalance = userBalance - ub;
-                                }
-                              }
-                            });
+                            int ub = int.parse(balanceFieldController.text);
+                            context.read<CostNotifier>().trade(ub, chance);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -546,18 +540,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : const Text('Successfully'),
                               ),
                             );
-                            setState(() {
-                              int ub = int.parse(balanceFieldController.text);
-                              if (ub <= userBalance) {
-                                if (chance == 1) {
-                                  userBalance =
-                                      userBalance + ub + (ub * 0.7).toInt();
-                                }
-                                if (chance == 0) {
-                                  userBalance = userBalance - ub;
-                                }
-                              }
-                            });
+                            int ub = int.parse(balanceFieldController.text);
+                            context.read<CostNotifier>().trade(ub, chance);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
