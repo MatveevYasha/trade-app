@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trade_app/global_widgets/background_widget.dart';
-import 'package:trade_app/screens/home_screen.dart';
+import 'package:trade_app/screens/home_screen/home_screen.dart';
 
 class ActivateScreen extends StatefulWidget {
   const ActivateScreen({super.key});

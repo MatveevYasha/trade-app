@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trade_app/models/pair.dart';
-import 'package:trade_app/screens/home_screen.dart';
+import 'package:trade_app/screens/home_screen/home_screen.dart';
 
 class CurrencyPairScreen extends StatefulWidget {
   const CurrencyPairScreen({super.key});
@@ -87,40 +87,8 @@ class _CurrencyPairScreenState extends State<CurrencyPairScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          PageRouteBuilder(
-                              pageBuilder: (_, __, ___) => HomeScreen(
-                                  url: selectedUrl, pair: selectedPair),
-                              transitionDuration:
-                                  const Duration(milliseconds: 250),
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                const begin = Offset(-1.0, 0.0);
-                                const end = Offset.zero;
-                                const curve = Curves.easeInOut;
-
-                                final tween = Tween(begin: begin, end: end);
-                                final curvedAnimation = CurvedAnimation(
-                                  parent: animation,
-                                  curve: curve,
-                                );
-
-                                return SlideTransition(
-                                  position: tween.animate(curvedAnimation),
-                                  child: child,
-                                );
-                              }),
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.white,
-                        size: 36,
-                      ),
-                    ),
+                    _BackButton(
+                        selectedUrl: selectedUrl, selectedPair: selectedPair),
                     const Spacer(flex: 2),
                     const Text(
                       'Currency pair',
@@ -177,6 +145,54 @@ class _CurrencyPairScreenState extends State<CurrencyPairScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _BackButton extends StatelessWidget {
+  const _BackButton({
+    super.key,
+    required this.selectedUrl,
+    required this.selectedPair,
+  });
+
+  final String selectedUrl;
+  final String selectedPair;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+              pageBuilder: (_, __, ___) =>
+                  HomeScreen(url: selectedUrl, pair: selectedPair),
+              transitionDuration: const Duration(milliseconds: 250),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(-1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.easeInOut;
+
+                final tween = Tween(begin: begin, end: end);
+                final curvedAnimation = CurvedAnimation(
+                  parent: animation,
+                  curve: curve,
+                );
+
+                return SlideTransition(
+                  position: tween.animate(curvedAnimation),
+                  child: child,
+                );
+              }),
+        );
+      },
+      icon: const Icon(
+        Icons.chevron_left,
+        color: Colors.white,
+        size: 36,
       ),
     );
   }
